@@ -1,42 +1,49 @@
-'use client'
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
-export default function HomePage() {
-  const [weatherData, setWeatherData] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+const NASA_API_KEY = 'YOUR_NASA_API_KEY';
+const NASA_WEATHER_URL = `https://api.nasa.gov/insight_weather/?api_key=${NASA_API_KEY}&feedtype=json&ver=1.0`;
+
+const MarsianWeatherDashboard = () => {
+  const [weatherData, setWeatherData] = useState([]);
+  const [solKeys, setSolKeys] = useState([]);
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get('/api/mock-mars-weather');
-        setWeatherData(response.data);
-        setLoading(false);
-      } catch (error) {
-        setError('Failed to fetch data');
-        setLoading(false);
-      }
-    };
-    fetchData();
+    axios.get(NASA_WEATHER_URL)
+      .then(response => {
+        const { sol_keys, ...solData } = response.data;
+        setSolKeys(sol_keys);
+        setWeatherData(solData);
+      })
+      .catch(error => {
+        console.error('Error fetching weather data:', error);
+      });
   }, []);
 
-  if (loading) return <p className="text-center text-gray-600">Loading...</p>;
-  if (error) return <p className="text-center text-red-600">{error}</p>;
-
   return (
-    <div className="min-h-screen bg-gray-200 p-6">
-      <h1 className="text-3xl font-bold text-center text-gray-800 mb-6">Mars Weather for the Next 7 Days</h1>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {weatherData.sol_keys.map(sol => (
-          <div key={sol} className="bg-white p-4 rounded-lg shadow-lg border border-gray-300">
-            <h2 className="text-xl font-semibold text-gray-700 mb-2">Sol {sol}</h2>
-            <p className="text-gray-600"><strong>Temperature:</strong> {weatherData[sol].AT.av}°C</p>
-            <p className="text-gray-600"><strong>Pressure:</strong> {weatherData[sol].PRE.av} Pa</p>
-            <p className="text-gray-600"><strong>Wind Speed:</strong> {weatherData[sol].HWS.av} m/s</p>
+    <div className="bg-gray-900 text-white p-10">
+      <header className="text-center mb-10">
+        <h1 className="text-4xl font-bold">Latest Weather at Elysium Planitia</h1>
+        <p className="text-lg mt-2">
+          InSight is taking daily weather measurements (temperature, wind, pressure)
+          on the surface of Mars at Elysium Planitia, a flat, smooth plain near Mars' equator.
+        </p>
+      </header>
+      <div className="flex justify-center mb-10">
+        <img src="/insight_photo (1).png" alt="InSight Mars Weather" className="w-full h-auto" />
+      </div>
+      <main className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {solKeys.map((sol, index) => (
+          <div key={index} className="bg-gray-800 rounded-lg p-5 text-center">
+            <h2 className="text-2xl font-semibold">Sol {sol}</h2>
+            <p className="text-lg">{new Date(weatherData[sol].First_UTC).toLocaleDateString()}</p>
+            <p className="mt-2">High: {weatherData[sol].AT?.mx ? `${weatherData[sol].AT.mx.toFixed(1)}° C` : 'N/A'}</p>
+            <p>Low: {weatherData[sol].AT?.mn ? `${weatherData[sol].AT.mn.toFixed(1)}° C` : 'N/A'}</p>
           </div>
         ))}
-      </div>
+      </main>
     </div>
   );
-}
+};
+
+export default MarsianWeatherDashboard;
