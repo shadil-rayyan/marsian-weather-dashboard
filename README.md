@@ -28,11 +28,10 @@ This dashboard will:
 - Enhance public interest and awareness of space exploration and planetary science.
 - Serve as a prototype for future space weather applications and educational tools.
 
-## Demo Video
+## ui screen
 
-[![Demo Video](https://img.youtube.com/vi/YOUR_VIDEO_ID/maxresdefault.jpg)](https://www.youtube.com/watch?v=YOUR_VIDEO_ID)
+[![ui](https://github.com/shadil-rayyan/marsian-weather-dashboard/blob/main/public/Screenshot%202024-07-21%20234831.png)]
 
-Watch our demo video to see the Mars Weather Dashboard in action!
 
 ## Features
 
@@ -69,8 +68,8 @@ To get started with the Mars Weather Dashboard, follow these steps:
    ```bash
    npm run dev
    ```
-
-5. **Open your browser and go to `http://localhost:3000` to view the dashboard.**
+5.**create a env.local file and make a NEXT_PUBLIC_NASA_API_KEY (get the api from nasa or use demo api)**
+6. **Open your browser and go to `http://localhost:3000` to view the dashboard.**
 
 ## Contributing
 
